@@ -1,0 +1,288 @@
+:root {
+  --text: #0b2a1c;
+  --muted: rgba(11, 42, 28, .78);
+  --line: rgba(0,0,0,.12);
+  --brand-green: #0a7a3a;
+  --brand-yellow: #f3db20;
+  --wa: #25D366;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+
+  /* Sfondo coordinato al logo: giallo + verde, con watermark del logo */
+  background:
+    radial-gradient(900px 500px at 15% 10%, rgba(10,122,58,.18), transparent 55%),
+    radial-gradient(900px 500px at 90% 25%, rgba(243,219,32,.35), transparent 60%),
+    linear-gradient(135deg, rgba(243,219,32,.85), rgba(243,219,32,.65));
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .10;                 /* watermark */
+  background-image: url("logo-coldiretti-monteforte.png");
+  background-repeat: no-repeat;
+  background-position: 85% 18%;
+  background-size: min(420px, 60vw);
+  filter: saturate(1.05);
+}
+
+.container { max-width: 980px; margin: 28px auto; padding: 0 16px; display: grid; gap: 16px; }
+
+.header { padding: 12px 4px; }
+
+.brand {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.brandLogo {
+  width: 84px;
+  height: 84px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(255,255,255,.55);
+  object-fit: cover;
+  box-shadow: 0 10px 28px rgba(0,0,0,.10);
+}
+
+h1 { margin: 0 0 6px; font-size: 28px; }
+
+.subtitle { margin: 0; color: var(--muted); }
+.subtitle.small { margin-top: 6px; font-size: 14px; }
+
+.card {
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  padding: 18px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 18px 55px rgba(0,0,0,.10);
+}
+
+h2 { margin: 14px 0 10px; font-size: 18px; color: rgba(11,42,28,.95); }
+
+.hint { margin: 0 0 10px; color: var(--muted); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.grid .full { grid-column: 1 / -1; }
+
+label { display: grid; gap: 6px; color: rgba(11,42,28,.88); font-size: 14px; }
+
+input, select, textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.14);
+  background: rgba(255,255,255,.86);
+  color: rgba(11,42,28,.98);
+  padding: 10px 12px;
+  outline: none;
+  min-height: 44px;
+  font-size: 16px;
+}
+textarea { min-height: auto; }
+
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(10,122,58,.55);
+  box-shadow: 0 0 0 3px rgba(10,122,58,.18);
+}
+
+.dateField { position: relative; }
+.calendarBtn{
+  position: absolute;
+  right: 10px;
+  bottom: 7px;
+  height: 36px;
+  min-height: 36px;
+  width: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.14);
+  background: rgba(255,255,255,.86);
+  color: rgba(11,42,28,.95);
+  cursor: pointer;
+}
+.calendarBtn:hover { background: rgba(255,255,255,.96); }
+
+.items { display: grid; gap: 10px; }
+.itemRow {
+  display: grid;
+  grid-template-columns: 1fr 220px 42px;
+  gap: 10px;
+  align-items: center;
+}
+.removeBtn {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.14);
+  background: rgba(0,0,0,.04);
+  color: rgba(11,42,28,.95);
+  cursor: pointer;
+}
+.removeBtn:hover { background: rgba(0,0,0,.07); }
+
+.actions { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+.actionsSend { margin-top: 12px; }
+
+button {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 44px;
+}
+.primary {
+  background: linear-gradient(135deg, rgba(10,122,58,.95), rgba(10,122,58,.78));
+  color: white;
+}
+.secondary {
+  background: rgba(255,255,255,.70);
+  color: rgba(11,42,28,.95);
+  border: 1px solid rgba(0,0,0,.12);
+}
+.whatsapp {
+  background: var(--wa);
+  color: #03130a;
+}
+button:disabled { opacity: .55; cursor: not-allowed; }
+
+.status { margin-top: 10px; color: rgba(11,42,28,.85); min-height: 22px; }
+
+.preview pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(0,0,0,.18);
+  background: rgba(255,255,255,.70);
+  white-space: pre-wrap;
+}
+
+.footer { margin-top: 12px; display: grid; gap: 8px; }
+.privacy { display: flex; align-items: center; gap: 10px; color: rgba(11,42,28,.88); }
+.smallprint { color: rgba(11,42,28,.75); }
+
+/* ===== Calendario (overlay) ===== */
+.calOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 999;
+}
+.calOverlay.open{ display: flex; }
+
+.calModal{
+  width: min(420px, 100%);
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+  overflow: hidden;
+}
+
+.calHeader{
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(0,0,0,.10);
+}
+.calTitle{
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: .2px;
+  color: rgba(11,42,28,.95);
+}
+.calNav{
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(0,0,0,.04);
+  color: rgba(11,42,28,.95);
+}
+.calNav:hover{ background: rgba(0,0,0,.07); }
+
+.calWeekdays{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  padding: 10px 12px 0;
+  color: rgba(11,42,28,.70);
+  font-size: 12px;
+}
+.calWeekdays div{ text-align: center; padding: 6px 0; }
+
+.calGrid{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  padding: 10px 12px 12px;
+}
+.calDay{
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(255,255,255,.95);
+  color: rgba(11,42,28,.95);
+  font-weight: 800;
+}
+.calDay:hover{ background: rgba(243,219,32,.25); }
+.calDay.muted{ opacity: .35; }
+.calDay.disabled{ opacity: .25; cursor: not-allowed; }
+.calDay.sunday{ outline: 2px solid rgba(244,185,58,.65); }
+
+.calFooter{
+  padding: 12px;
+  border-top: 1px solid rgba(0,0,0,.10);
+  display: grid;
+  gap: 10px;
+}
+.calLegend{
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  color: rgba(11,42,28,.70);
+  font-size: 12px;
+}
+.pill{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(0,0,0,.04);
+  margin-right: 6px;
+}
+.pill.disabled{ opacity: .25; }
+.pill.sunday{
+  background: rgba(244,185,58,.20);
+  outline: 2px solid rgba(244,185,58,.65);
+}
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .itemRow { grid-template-columns: 1fr 1fr 42px; }
+  .brand { grid-template-columns: 68px 1fr; }
+  .brandLogo { width: 68px; height: 68px; border-radius: 14px; }
+}

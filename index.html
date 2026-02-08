@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>COLDIRETTI MONTEFORTE - NUOVO ORDINE</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="container">
+    <header class="header">
+      <div class="brand">
+        <img class="brandLogo" src="logo-coldiretti-monteforte.png" alt="Logo COLDIRETTI MONTEFORTE" />
+        <div class="brandText">
+          <h1>Ordine prodotti Km 0</h1>
+          <p class="subtitle">
+            <strong>COLDIRETTI MONTEFORTE</strong> — Compila l’ordine e ritira presso il punto vendita.
+          </p>
+          <p class="subtitle small">
+            Giorni di ritiro: <strong>Martedì–Domenica</strong> (Lunedì chiuso). Domenica solo <strong>09:00–13:00</strong>.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Dati cliente</h2>
+
+      <form id="orderForm" novalidate>
+        <div class="grid">
+          <label>
+            Nome e Cognome *
+            <input type="text" id="nome" required autocomplete="name" />
+          </label>
+
+          <label>
+            Telefono (obbligatorio) *
+            <input type="tel" id="telefono" required autocomplete="tel" inputmode="tel" placeholder="+39 3xx xxx xxxx" />
+          </label>
+        </div>
+
+        <h2>Ritiro</h2>
+        <div class="grid">
+          <label class="dateField">
+            Data ritiro *
+            <input type="text" id="dataRitiro" required placeholder="Tocca per scegliere" readonly />
+            <button type="button" id="openCalendar" class="calendarBtn" aria-label="Apri calendario">📅</button>
+          </label>
+
+          <label>
+            Fascia oraria *
+            <select id="fasciaOraria" required>
+              <option value="" selected>Seleziona…</option>
+              <option>09:00 - 11:00</option>
+              <option>11:00 - 13:00</option>
+              <option>15:00 - 17:00</option>
+              <option>17:00 - 19:00</option>
+            </select>
+          </label>
+
+          <label class="full">
+            Note (opzionale)
+            <textarea id="note" rows="3" placeholder="Es: sostituzioni, preferenze, ecc."></textarea>
+          </label>
+        </div>
+
+        <h2>Prodotti</h2>
+        <p class="hint">Inserisci uno o più prodotti (nome + quantità). Puoi aggiungere righe.</p>
+
+        <div id="items" class="items">
+          <div class="itemRow">
+            <input type="text" class="prodotto" placeholder="Prodotto (es: mele)" required />
+            <input type="text" class="quantita" placeholder="Quantità (es: 2 kg)" required inputmode="text" />
+            <button type="button" class="removeBtn" aria-label="Rimuovi riga">✕</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="addRow" class="secondary">+ Aggiungi prodotto</button>
+        </div>
+
+        <h2>Invio ordine</h2>
+        <div class="actions actionsSend">
+          <button type="button" id="sendWhatsapp" class="whatsapp" disabled>Invia su WhatsApp</button>
+        </div>
+
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+
+        <footer class="footer">
+          <label class="privacy">
+            <input type="checkbox" id="privacy" required checked />
+            Acconsento al trattamento dei dati per la gestione dell’ordine.
+          </label>
+          <small class="smallprint">
+            I dati vengono usati solo per evadere l’ordine e organizzare il ritiro.
+          </small>
+        </footer>
+      </form>
+    </section>
+
+    <section class="card preview">
+      <h2>Anteprima ordine</h2>
+      <pre id="orderPreview">Compila il modulo e clicca “Genera ordine”.</pre>
+    </section>
+  </main>
+
+  <!-- Calendario (overlay) -->
+  <div id="calOverlay" class="calOverlay" aria-hidden="true">
+    <div class="calModal" role="dialog" aria-modal="true" aria-label="Seleziona data di ritiro">
+      <div class="calHeader">
+        <button type="button" id="calPrev" class="calNav" aria-label="Mese precedente">‹</button>
+        <div id="calTitle" class="calTitle"></div>
+        <button type="button" id="calNext" class="calNav" aria-label="Mese successivo">›</button>
+      </div>
+      <div class="calWeekdays" aria-hidden="true">
+        <div>Lun</div><div>Mar</div><div>Mer</div><div>Gio</div><div>Ven</div><div>Sab</div><div>Dom</div>
+      </div>
+      <div id="calGrid" class="calGrid"></div>
+      <div class="calFooter">
+        <div class="calLegend">
+          <span class="pill disabled"></span> Non disponibile (Lunedì / passato)
+          <span class="pill sunday"></span> Domenica (solo 09–13)
+        </div>
+        <button type="button" id="calClose" class="secondary">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
