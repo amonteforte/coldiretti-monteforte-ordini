@@ -1,6 +1,7 @@
 // === CONFIGURA QUI ===
 const AZIENDA_NOME = "COLDIRETTI MONTEFORTE";
 const WHATSAPP_NUMERO = "393386254626";
+const MIN_HOURS_BEFORE = 48;
 // ======================
 
 const form = document.getElementById("orderForm");
@@ -32,15 +33,6 @@ function setStatus(msg) {
 
 function getValue(id) {
   return (document.getElementById(id).value || "").trim();
-}
-
-function escapeHtml(str) {
-  return (str || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
 }
 
 function getItems() {
@@ -78,22 +70,36 @@ function isMonday(d){ return d.getDay() === 1; }
 function isSunday(d){ return d.getDay() === 0; }
 function fromYMD(v){ return new Date(v + "T12:00:00"); }
 
+// ======================
+// SOGLIA 48 ORE REALI
+// ======================
+const now = new Date();
+const minDateTime = new Date(now.getTime() + MIN_HOURS_BEFORE * 60 * 60 * 1000);
+// confronto a livello di giorno (UX coerente)
+const minValidDate = new Date(minDateTime.toDateString());
+
 function applyRulesForDate(d){
+  if (d < minValidDate) {
+    setStatus("⚠️ Gli ordini devono essere effettuati almeno 48 ore prima del ritiro.");
+    sendWhatsappBtn.disabled = true;
+    setTimeOptions([]);
+    return false;
+  }
+
   if (isMonday(d)) {
     setStatus("⚠️ Il ritiro non è disponibile il lunedì.");
     sendWhatsappBtn.disabled = true;
+    setTimeOptions([]);
     return false;
   }
-  if (isSunday(d)) {
-    setTimeOptions(TIME_OPTIONS_SUNDAY);
-  } else {
-    setTimeOptions(TIME_OPTIONS_FULL);
-  }
+
+  setStatus("");
+  setTimeOptions(isSunday(d) ? TIME_OPTIONS_SUNDAY : TIME_OPTIONS_FULL);
   return true;
 }
 
 // ======================
-// CALENDARIO (INVARIATO)
+// CALENDARIO
 // ======================
 const today = new Date(); today.setHours(0,0,0,0);
 let viewYear = today.getFullYear();
@@ -114,7 +120,6 @@ function renderCalendar(){
 
   const first = new Date(viewYear, viewMonth, 1, 12);
   const offset = (first.getDay() + 6) % 7;
-  const last = new Date(viewYear, viewMonth + 1, 0, 12).getDate();
 
   for (let i = 0; i < 42; i++) {
     const d = new Date(viewYear, viewMonth, i - offset + 1, 12);
@@ -123,7 +128,7 @@ function renderCalendar(){
     btn.className = "calDay";
     btn.textContent = d.getDate();
 
-    if (d < today || isMonday(d)) {
+    if (d < minValidDate || isMonday(d)) {
       btn.disabled = true;
       btn.classList.add("disabled");
     }
@@ -194,12 +199,38 @@ function checkAndGenerateOrder() {
   const d = fromYMD(data);
   if (!applyRulesForDate(d)) return;
 
+  // controllo 48 ORE REALI (data + fascia)
+  const fascia = getValue("fasciaOraria");
+  const fm = parseFasciaOraria(fascia);
+  if (fm) {
+    const ritiroDateTime = new Date(d);
+    ritiroDateTime.setHours(fm.h, fm.m, 0, 0);
+
+    const minDateTime = new Date(Date.now() + 48 * 60 * 60 * 1000);
+
+    if (ritiroDateTime < minDateTime) {
+      setStatus("⚠️ L’orario di ritiro deve essere almeno 48 ore dopo l’ordine.");
+      sendWhatsappBtn.disabled = true;
+      return;
+    }
+  }
+
   lastOrderText = buildOrderText();
   preview.textContent = lastOrderText;
   sendWhatsappBtn.disabled = false;
 }
 
-// LISTENER GLOBALI
+function parseFasciaOraria(fascia) {
+  if (!fascia) return null;
+  const start = fascia.split(" - ")[0]; // es. "09:00"
+  const [h, m] = start.split(":").map(Number);
+  return { h, m };
+}
+
+
+// ======================
+// LISTENER
+// ======================
 items.addEventListener("input", checkAndGenerateOrder);
 document.getElementById("nome").addEventListener("input", checkAndGenerateOrder);
 document.getElementById("telefono").addEventListener("input", checkAndGenerateOrder);
