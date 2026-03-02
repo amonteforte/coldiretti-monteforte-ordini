@@ -1,6 +1,6 @@
 // === CONFIGURA QUI ===
 const AZIENDA_NOME = "COLDIRETTI MONTEFORTE";
-const WHATSAPP_NUMERO = "393386254626";
+const WHATSAPP_NUMERO = "393281573239";
 const MIN_HOURS_BEFORE = 48;
 // ======================
 
